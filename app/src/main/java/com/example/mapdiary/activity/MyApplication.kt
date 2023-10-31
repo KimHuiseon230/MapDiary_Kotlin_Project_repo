@@ -1,6 +1,6 @@
 package com.example.mapdiary.activity
 
-import androidx.multidex.MultiDexApplication
+import android.support.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

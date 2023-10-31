@@ -1,78 +1,79 @@
 package com.example.mapdiary.activity
 
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.viewpager2.widget.ViewPager2
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.mapdiary.BuildConfig
 import com.example.mapdiary.R
 import com.example.mapdiary.adapter.ViewPagerAdapter
 import com.example.mapdiary.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.kakao.util.maps.helper.Utility
 
-class MainActivity : AppCompatActivity() ,BottomNavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
     lateinit var viewPagerAdapter: ViewPagerAdapter
     var exitFlag = false
+    private var isInitialized = false // 초기화 상태를 추적하는 변수
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         BuildConfig.APPLICATION_ID
         //Fragment를 customViewpagerAdapter에 추가
         viewPagerAdapter = ViewPagerAdapter(this)
         //안드로이드 화면 세로 고정하기
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        // 페이저 스와핑 비활성화
-        binding.viewPager2.setUserInputEnabled(false);
-        // 페이저에 어댑터 연결
-        binding.viewPager2.adapter = ViewPagerAdapter(this)
 
-        // 슬라이드하여 페이지가 변경되면 바텀네비게이션의 탭도 그 페이지로 활성화
-        binding.viewPager2.registerOnPageChangeCallback(
-            object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    binding.bottomNavigation.menu.getItem(position).isChecked = true
-                }
-            }
+        // 툴바 초기화 및 설정
+        val toolbar = findViewById<Toolbar>(R.id.toolbar) // R.id.toolbar는 레이아웃에서 정의한 툴바의 ID입니다.
+        setSupportActionBar(toolbar)
+
+        // 초기화가 아직 수행되지 않았다면 초기화 작업을 실행
+        if (!isInitialized) {
+            initNavigationComponent()
+            isInitialized = true
+        }
+
+        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
+
+    }
+
+    // 네비게이션 설정 초기화 함수
+    private fun initNavigationComponent() {
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_chatroom, R.id.navigation_userpage,
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+            )
         )
-        // 리스너 연결
-        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.navView.setupWithNavController(navController)
+    }
+
+    fun runDelayed(millis: Long, function: () -> Unit) {
+        Handler(Looper.getMainLooper()).postDelayed(function, millis)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.action_one -> {
-                // ViewPager의 현재 item에 첫 번째 화면을 대입
-                binding.viewPager2.currentItem = 0
-                return true
-            }
-            R.id.action_two -> {
-                // ViewPager의 현재 item에 두 번째 화면을 대입
-                binding.viewPager2.currentItem = 1
-                return true
-            }
-            R.id.action_three -> {
-                // ViewPager의 현재 item에 세 번째 화면을 대입
-                binding.viewPager2.currentItem = 2
-                return true
-            }
-            R.id.action_forth -> {
-                // ViewPager의 현재 item에 세 번째 화면을 대입
-                binding.viewPager2.currentItem = 3
-                return true
-            }
-            else -> {
-                return false
-            }
-        }
-    }//onNavigationItemSelected end
+        TODO("Not yet implemented")
+    }
+
     override fun onBackPressed() {
         if (exitFlag) {
             finishAffinity()
@@ -84,9 +85,4 @@ class MainActivity : AppCompatActivity() ,BottomNavigationView.OnNavigationItemS
             }
         }
     }
-    fun runDelayed(millis: Long, function: () -> Unit) {
-        Handler(Looper.getMainLooper()).postDelayed(function, millis)
-    }
-
 }
-

@@ -1,4 +1,4 @@
-package com.example.mapdiary.fragment
+package com.example.mapdiary.fragment.chat
 
 import android.content.Context
 import android.os.Bundle
@@ -6,12 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mapdiary.activity.MainActivity
-import com.example.mapdiary.R
 import com.example.mapdiary.adapter.UserAdapter
-import com.example.mapdiary.databinding.FragmentOneBinding
+import com.example.mapdiary.databinding.FragmentChatroomBinding
 import com.example.mapdiary.dataclass.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -23,7 +21,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class ChatFragment : Fragment() {
-    lateinit var binding: FragmentOneBinding
+    lateinit var binding: FragmentChatroomBinding
     lateinit var adapter: UserAdapter
     lateinit var mainActivity: MainActivity
     private lateinit var mAuth: FirebaseAuth
@@ -38,7 +36,7 @@ class ChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentOneBinding.inflate(layoutInflater)
+        binding = FragmentChatroomBinding.inflate(layoutInflater)
         mAuth = Firebase.auth
         mDbRef = Firebase.database.reference
         userList = ArrayList()

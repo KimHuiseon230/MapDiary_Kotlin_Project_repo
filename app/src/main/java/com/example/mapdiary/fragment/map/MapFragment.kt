@@ -1,4 +1,4 @@
-package com.example.mapdiary.fragment
+package com.example.mapdiary.fragment.map
 
 import android.Manifest
 import android.content.ContentValues

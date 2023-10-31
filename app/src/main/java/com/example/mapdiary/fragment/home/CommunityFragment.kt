@@ -1,4 +1,4 @@
-package com.example.mapdiary.fragment
+package com.example.mapdiary.fragment.home
 
 import android.content.Context
 import android.content.Intent
@@ -13,14 +13,14 @@ import com.example.mapdiary.activity.MainActivity
 import com.example.mapdiary.activity.BoardWrtieActivity
 import com.example.mapdiary.firebase.FBRef
 import com.example.mapdiary.adapter.BoardAdapter
-import com.example.mapdiary.databinding.FragmentFourBinding
+import com.example.mapdiary.databinding.FragmentCommunityBinding
 import com.example.mapdiary.dataclass.Board
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class CommunityFragment : Fragment() {
-    lateinit var binding: FragmentFourBinding
+    lateinit var binding: FragmentCommunityBinding
     lateinit var mainActivity: MainActivity
     lateinit var boardAdapter: BoardAdapter
     lateinit var boardList: MutableList<Board>
@@ -35,7 +35,7 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentFourBinding.inflate(layoutInflater)
+        binding = FragmentCommunityBinding.inflate(layoutInflater)
 
         boardList = mutableListOf()
         boardKeyList = mutableListOf()

@@ -1,24 +1,25 @@
-package com.example.mapdiary.fragment
+package com.example.mapdiary.fragment.setting
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.example.mapdiary.activity.MainActivity
 import com.example.mapdiary.activity.MainLogInActivity
-import com.example.mapdiary.databinding.FragmentThreeBinding
+import com.example.mapdiary.databinding.FragmentMapBinding
+import com.example.mapdiary.databinding.FragmentSettingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class LogoutFragment : Fragment() {
+class SettingFragment : Fragment() {
     lateinit var mainActivity: MainActivity
-    lateinit var binding: FragmentThreeBinding
+    lateinit var binding: FragmentSettingBinding
     lateinit var spf: SharedPreferences
 
     override fun onAttach(context: Context) {
@@ -30,7 +31,7 @@ class LogoutFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentThreeBinding.inflate(inflater)
+        binding = FragmentSettingBinding.inflate(inflater)
 
         binding.btnLogout.setOnClickListener {
             val builder = AlertDialog.Builder(mainActivity)
