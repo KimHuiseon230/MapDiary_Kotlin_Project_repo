@@ -2,7 +2,9 @@ package com.example.mapdiary.adapter
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +15,7 @@ import com.example.mapdiary.dataclass.Comment
 import com.example.mapdiary.dataclass.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -52,12 +55,38 @@ class CommentAdapter(val context: Context, val commentList: MutableList<Comment>
 
                 override fun onCancelled(error: DatabaseError) {}
             })
-        val pictureRef = Firebase.storage!!.reference.child(commentUserUid+".png")
-        pictureRef.downloadUrl.addOnCompleteListener {
+
+        // 이메일로 로그인한 경우
+        val profileRef = Firebase.storage!!.reference.child("${commentUserUid}.png")
+        Log.d("UserProfileActivity_profileRef",profileRef.toString())
+        profileRef.downloadUrl.addOnCompleteListener { it ->
             if (it.isSuccessful) {
                 Glide.with(context).load(it.result).into(binding.ivUserProfilePicture)
+                binding.ivUserProfilePicture.visibility = View.VISIBLE
             }
         }
+
+
+        val ref = FirebaseDatabase.getInstance()
+            .getReference("User/users/${commentUserUid}/photoUrl")
+        Log.d("UserProfileActivity_ref",ref.toString())
+
+        // 구글로 로그인 했을시
+//        if (user != null) {
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val imageUrl = dataSnapshot.value as String
+                    // 이미지를 가져와서 표시
+                    Glide.with(context).load(imageUrl).into(binding.ivUserProfilePicture)
+                    binding.ivUserProfilePicture.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 데이터베이스 읽기 실패 시 처리
+            }
+        })
 
     }
 

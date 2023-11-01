@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.example.mapdiary.dataclass.User
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -44,7 +46,7 @@ class BoardAdapter(val context: Context, val boardList: MutableList<Board>) : Re
         val boardData = boardList.get(position)
         val currentUser = boardList[position]
         val writerUid = currentUser.boardWriter
-        val uid = writerUid
+
         binding.tvTitle.text = boardData.boardTitle
         binding.tvContent.text = boardData.boardContent
         binding.tvLike.text = boardData.boardLike.toString()
@@ -68,7 +70,7 @@ class BoardAdapter(val context: Context, val boardList: MutableList<Board>) : Re
             }
         })
 
-        Firebase.database.reference.child("User").child("users").orderByChild("uid").equalTo(writerUid)
+        Firebase.database.reference.child("User").child("users").orderByChild("$writerUid")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var writerName = ""
@@ -141,19 +143,42 @@ class BoardAdapter(val context: Context, val boardList: MutableList<Board>) : Re
         })
 
         val pictureRef = Firebase.storage!!.reference.child("images/${boardData.boardUid}.png")
+
+        //업로드한 이미지가 있을 경우에는 보이고 아닌 경우에는 숨김처리로 변경
         pictureRef.downloadUrl.addOnCompleteListener {
             if (it.isSuccessful) {
                 Glide.with(context).load(it.result).into(binding.ivImage)
+                holder.binding.ivImage.visibility = View.VISIBLE // 보이도록 처리
+            } else {
+                holder.binding.ivImage.visibility = View.GONE // 숨김 처리
             }
         }
 
-        val profileRef = Firebase.storage!!.reference.child(uid + ".png")
-        profileRef.downloadUrl.addOnCompleteListener {
+        // 이메일로 로그인한 경우
+        val profileRef = Firebase.storage!!.reference.child("${boardData.boardWriter}.png")
+        profileRef.downloadUrl.addOnCompleteListener { it ->
             if (it.isSuccessful) {
                 Glide.with(context).load(it.result).into(binding.ivUser)
+                binding.ivUser.visibility = View.VISIBLE
             }
         }
 
+        val ref = FirebaseDatabase.getInstance().getReference("User/users/${boardData.boardWriter}/photoUrl")
+        Log.d("aaaaaa",ref.toString())
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val imageUrl = dataSnapshot.value as String
+                    // 이미지를 가져와서 표시
+                    Glide.with(context).load(imageUrl).into(binding.ivUser)
+                    binding.ivUser.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 데이터베이스 읽기 실패 시 처리
+            }
+        })
         binding.root.setOnClickListener {
             val tvHits = mutableMapOf<String, Any>()
             val weight = boardData.boardHits + 1

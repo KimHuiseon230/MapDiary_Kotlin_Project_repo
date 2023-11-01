@@ -10,9 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.example.mapdiary.activity.CheckLoginActivity
 import com.example.mapdiary.activity.MainActivity
-import com.example.mapdiary.activity.MainLogInActivity
-import com.example.mapdiary.databinding.FragmentMapBinding
 import com.example.mapdiary.databinding.FragmentSettingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -44,7 +43,7 @@ class SettingFragment : Fragment() {
                     spfEdit.apply()
                     try {
                         Firebase.auth.signOut()
-                        startActivity(Intent(mainActivity, MainLogInActivity::class.java))
+                        startActivity(Intent(mainActivity, CheckLoginActivity::class.java))
                         dialog.dismiss()
                         mainActivity.finish()
 

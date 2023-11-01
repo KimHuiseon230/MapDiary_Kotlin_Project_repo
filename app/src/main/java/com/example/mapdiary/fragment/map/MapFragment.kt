@@ -28,7 +28,7 @@ import com.example.mapdiary.dataclass.ListLayout
 import com.example.mapdiary.R
 import com.example.mapdiary.adapter.CustomBalloonAdapter
 import com.example.mapdiary.adapter.ListAdapter
-import com.example.mapdiary.databinding.FragmentTwoBinding
+import com.example.mapdiary.databinding.FragmentMapBinding
 import com.example.mapdiary.mapdata.KakaoAPI
 import com.example.mapdiary.mapdata.ResultSearchKeyword
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -55,7 +55,7 @@ class MapFragment : Fragment(), MapView.MapViewEventListener, View.OnClickListen
     private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
     private lateinit var mainActivity: MainActivity
     private lateinit var eventListener: MarkerEventListener
-    lateinit var binding: FragmentTwoBinding
+    lateinit var binding: FragmentMapBinding
     lateinit var mapView: MapView
     private val listItems = arrayListOf<ListLayout>()
     private val listAdapter = ListAdapter(listItems)
@@ -85,7 +85,7 @@ class MapFragment : Fragment(), MapView.MapViewEventListener, View.OnClickListen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTwoBinding.inflate(inflater)
+        binding = FragmentMapBinding.inflate(inflater)
         return binding.root
     }// end of create
 

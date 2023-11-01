@@ -19,6 +19,7 @@ import com.example.mapdiary.firebase.FBAuth
 import com.example.mapdiary.firebase.FBRef
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -151,10 +152,31 @@ class BoardDetailsActivity : AppCompatActivity() {
                 pictureRef.downloadUrl.addOnCompleteListener {
                     if (it.isSuccessful) {
                         Glide.with(applicationContext).load(it.result)
+                            .into(binding.ivImage)
+                    }
+                }
+                val UserPictureRef = Firebase.storage!!.reference.child("$writerUid.png")
+                UserPictureRef.downloadUrl.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Glide.with(applicationContext).load(it.result)
                             .into(binding.ivUserProfilePicture)
                     }
                 }
-            }
+
+                //                val user = FirebaseAuth.getInstance().currentUser
+                // Firebase에 로그인한 경우
+                val ref = FirebaseDatabase.getInstance()
+                    .getReference("User/users/${writerUid}/photoUrl")
+                ref.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            val imageUrl = dataSnapshot.value as String
+                            // 이미지를 가져와서 표시
+                            Glide.with(applicationContext).load(imageUrl).into(binding.ivUserProfilePicture)
+                            binding.ivUserProfilePicture.visibility = View.VISIBLE
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {} }) }
 
             override fun onCancelled(error: DatabaseError) {
             }
